@@ -1,24 +1,25 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { RequestType, Status } from 'Contracts/enums'
 
-export default class ApiToken extends BaseModel {
+export default class Request extends BaseModel {
     @column({ isPrimary: true })
     public id: number
 
     @column()
-    public user_id: number
+    public message: string | null
 
     @column()
-    public name: string
+    public sent_by_user_id: number
 
     @column()
-    public type: string
+    public sent_to_user_id: number
 
     @column()
-    public token: string
+    public type: RequestType
 
-    @column.dateTime()
-    public expires_at: DateTime | null
+    @column()
+    public status: Status
 
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime

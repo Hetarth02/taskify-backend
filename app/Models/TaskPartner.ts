@@ -1,24 +1,15 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class ApiToken extends BaseModel {
+export default class TaskPartner extends BaseModel {
     @column({ isPrimary: true })
     public id: number
 
     @column()
+    public task_id: number
+
+    @column()
     public user_id: number
-
-    @column()
-    public name: string
-
-    @column()
-    public type: string
-
-    @column()
-    public token: string
-
-    @column.dateTime()
-    public expires_at: DateTime | null
 
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime

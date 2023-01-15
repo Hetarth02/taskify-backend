@@ -1,18 +1,22 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-    protected tableName = 'users'
+    protected tableName = 'task_comments'
 
     public async up() {
         this.schema.createTable(this.tableName, (table) => {
             table.increments('id')
 
-            table.string('email', 255).notNullable().unique()
-            table.string('username', 255).nullable().unique()
-            table.string('password', 255).notNullable()
-            table.boolean('email_verified').defaultTo(0).comment('0 => Not verified, 1 => Verified')
-            table.string('profile_avatar', 255).nullable()
-            table.string('remember_me_token').nullable()
+            table.integer('task_id').unsigned().references('id').inTable('tasks').onDelete('CASCADE')
+            table
+                .integer('parent_id')
+                .unsigned()
+                .nullable()
+                .references('id')
+                .inTable('task_comments')
+                .onDelete('CASCADE')
+
+            table.text('comment').nullable()
 
             // For MySQL
             // table.timestamps(true, true)

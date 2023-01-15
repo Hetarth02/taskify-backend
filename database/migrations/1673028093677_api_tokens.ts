@@ -13,7 +13,14 @@ export default class extends BaseSchema {
             table.string('token', 64).notNullable().unique()
             table.timestamp('expires_at').nullable()
 
-            table.timestamps(true, true)
+            // For MySQL
+            // table.timestamps(true, true)
+
+            /**
+             * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
+             */
+            table.timestamp('created_at', { useTz: true })
+            table.timestamp('updated_at', { useTz: true })
         })
     }
 
