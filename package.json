@@ -32,6 +32,7 @@
   "dependencies": {
     "@adonisjs/auth": "^8.2.3",
     "@adonisjs/core": "^5.9.0",
+    "@adonisjs/i18n": "^1.5.6",
     "@adonisjs/lucid": "^18.3.0",
     "@adonisjs/mail": "^8.1.2",
     "@adonisjs/repl": "^3.1.11",
@@ -39,6 +40,7 @@
     "pg": "^8.8.0",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
+    "socket.io": "^4.6.0",
     "source-map-support": "^0.5.21"
   }
 }

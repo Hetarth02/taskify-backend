@@ -6,10 +6,10 @@ export default class extends BaseSchema {
 
     public async up() {
         this.schema.createTable(this.tableName, (table) => {
-            table.increments('id')
+            table.bigIncrements('id')
 
-            table.integer('sent_by_user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
-            table.integer('sent_to_user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+            table.bigInteger('sender_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+            table.bigInteger('receiver_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
 
             table.text('message').nullable()
 

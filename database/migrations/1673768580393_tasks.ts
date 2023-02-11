@@ -6,10 +6,10 @@ export default class extends BaseSchema {
 
     public async up() {
         this.schema.createTable(this.tableName, (table) => {
-            table.increments('id')
+            table.bigIncrements('id')
 
-            table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
-            table.integer('parent_id').unsigned().nullable().references('id').inTable('tasks').onDelete('CASCADE')
+            table.bigInteger('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+            table.bigInteger('parent_id').unsigned().nullable().references('id').inTable('tasks').onDelete('CASCADE')
 
             table.string('title', 255).notNullable()
             table.text('description').nullable()

@@ -5,11 +5,11 @@ export default class extends BaseSchema {
 
     public async up() {
         this.schema.createTable(this.tableName, (table) => {
-            table.increments('id')
+            table.bigIncrements('id')
 
-            table.integer('task_id').unsigned().references('id').inTable('tasks').onDelete('CASCADE')
+            table.bigInteger('task_id').unsigned().references('id').inTable('tasks').onDelete('CASCADE')
             table
-                .integer('parent_id')
+                .bigInteger('parent_id')
                 .unsigned()
                 .nullable()
                 .references('id')
