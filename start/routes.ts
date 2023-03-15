@@ -22,23 +22,33 @@ import Route from '@ioc:Adonis/Core/Route'
 import HealthCheck from '@ioc:Adonis/Core/HealthCheck'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
+// Test API
 Route.get('/', async () => {
     return { hello: 'world' }
 })
 
+// Health Check API
 Route.get('health', async ({ response }: HttpContextContract) => {
     const report = await HealthCheck.getReport()
 
     return report.healthy ? response.ok(report) : response.badRequest(report)
 }).as('health')
 
+// Web Routes
 Route.get('/verify/:email', 'AuthController.verify').as('verifyEmail')
 
 Route.group(() => {
+    // Auth APIs
     Route.post('login', 'AuthController.login').as('login')
     Route.post('register', 'AuthController.register').as('register')
 
     Route.group(() => {
+        // User APIs
         Route.get('logout', 'AuthController.logout').as('logout')
+        Route.get('profile', 'AuthController.profile').as('profile')
+
+        // Tasks APIs
+        Route.get('tasks', 'TasksController.getTasks').as('getTasks')
+        Route.post('task', 'TasksController.createTask').as('createTask')
     }).middleware('auth:api')
 }).prefix('/api')

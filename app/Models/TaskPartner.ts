@@ -1,5 +1,6 @@
+import User from './User'
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class TaskPartner extends BaseModel {
     @column({ isPrimary: true })
@@ -12,8 +13,11 @@ export default class TaskPartner extends BaseModel {
     public user_id: number
 
     @column.dateTime({ autoCreate: true })
-    public createdAt: DateTime
+    public created_at: DateTime
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
-    public updatedAt: DateTime
+    public updated_at: DateTime
+
+    @belongsTo(() => User, {})
+    public user: BelongsTo<typeof User>
 }

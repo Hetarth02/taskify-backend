@@ -16,6 +16,7 @@ export default class extends BaseSchema {
             table.jsonb('tags').nullable()
             table.boolean('is_public').defaultTo(true)
             table.boolean('is_complete').defaultTo(false)
+            table.boolean('in_challenge').defaultTo(false)
 
             this.schema.raw("CREATE TYPE task_priority AS ENUM ('high', 'medium', 'low')")
             table.enum('priority', Object.values(TaskPriority)).defaultTo(TaskPriority.LOW)

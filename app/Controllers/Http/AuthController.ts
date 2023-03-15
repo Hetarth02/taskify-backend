@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import User from 'App/Models/User'
 import Env from '@ioc:Adonis/Core/Env'
 import Hash from '@ioc:Adonis/Core/Hash'
@@ -24,6 +25,7 @@ export default class AuthController {
         await User.create({
             email: payload.email,
             password: payload.password,
+            profile_avatar: crypto.randomUUID(),
         })
 
         let route = Route.makeSignedUrl(
@@ -87,6 +89,7 @@ export default class AuthController {
             const token = await auth.use('api').generate(user, {
                 expiresIn: constants.TOKEN_EXPIRY,
             })
+
             return await Helper.successResponse('Logged In!', token)
         }
     }
@@ -97,6 +100,7 @@ export default class AuthController {
      * @author Hetarth Shah
      * @param request HttpContextContract
      * @param params HttpContextContract
+     * @param view HttpContextContract
      * @returns Promise<any>
      */
     public async verify({ request, params, view }: HttpContextContract): Promise<any> {
@@ -125,5 +129,16 @@ export default class AuthController {
     public async logout({ auth }: HttpContextContract): Promise<any> {
         await auth.use('api').revoke()
         return await Helper.successResponse('Logged Out!', '')
+    }
+
+    /**
+     * Get User Data
+     *
+     * @author Hetarth Shah
+     * @param auth HttpContextContract
+     * @returns Promise<any>
+     */
+    public async profile({ auth }: HttpContextContract): Promise<any> {
+        return await Helper.successResponse('Data fetched successfully!', auth.user)
     }
 }

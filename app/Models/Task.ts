@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { TaskPriority } from 'Contracts/enums'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Task extends BaseModel {
     @column({ isPrimary: true })
@@ -18,8 +18,8 @@ export default class Task extends BaseModel {
     @column()
     public description: string | null
 
-    @column({ consume: (value: Record<string, string[]>) => value.tags })
-    public tags: string[]
+    @column({ consume: (value: Record<string, string[] | undefined>) => value?.tags ?? [] })
+    public tags: Record<string, string[] | undefined>
 
     @column()
     public is_public: boolean
@@ -28,14 +28,17 @@ export default class Task extends BaseModel {
     public is_complete: boolean
 
     @column()
+    public in_challenge: boolean
+
+    @column()
     public priority: TaskPriority
 
     @column.dateTime()
     public end_at: DateTime | null
 
     @column.dateTime({ autoCreate: true })
-    public createdAt: DateTime
+    public created_at: DateTime
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
-    public updatedAt: DateTime
+    public updated_at: DateTime
 }
