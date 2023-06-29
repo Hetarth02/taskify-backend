@@ -25,6 +25,7 @@ export default class AuthController {
         await User.create({
             email: payload.email,
             password: payload.password,
+            username: payload.email.split('@')[0],
             profile_avatar: crypto.randomUUID(),
         })
 

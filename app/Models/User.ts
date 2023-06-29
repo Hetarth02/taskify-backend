@@ -40,6 +40,6 @@ export default class User extends BaseModel {
 
     @computed()
     public get getProfileAvatarUrl() {
-        return `${constants.PROFILE_URL}/${this.profile_avatar}`
+        return `${constants.PROFILE_URL}${this.profile_avatar}`
     }
 }
