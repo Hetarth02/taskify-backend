@@ -1,0 +1,20 @@
+{
+    "AUTH": {
+        "register_success": "🎉Congrats your account has been registered successfully, please check your inbox for verification mail!",
+        "invalid_credentials": "Invalid credentials!",
+        "login_success": "Logged In!",
+        "invalid_signature": "Signature is missing or URL was tampered.",
+        "email_verification_success": "Email verification Success!",
+        "logout_success": "Logged Out!",
+        "profile_update_success": "Profile updated successfully!"
+    },
+    "COMMON": {
+        "data_fetch_success": "Data fetched successfully!"
+    },
+    "COMMENT": {
+        "create_success": "Comment created successfully!"
+    },
+    "TASK": {
+        "create_success": "Task created successfully!"
+    }
+}

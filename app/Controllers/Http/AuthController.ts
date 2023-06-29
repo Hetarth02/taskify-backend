@@ -2,14 +2,15 @@ import crypto from 'crypto'
 import User from 'App/Models/User'
 import Env from '@ioc:Adonis/Core/Env'
 import Hash from '@ioc:Adonis/Core/Hash'
-import Helper from 'App/Helpers/Helpers'
 import Route from '@ioc:Adonis/Core/Route'
 import Mail from '@ioc:Adonis/Addons/Mail'
 import isEmail from 'validator/lib/isEmail'
 import constants from 'App/Helpers/constant'
+import Helper, { trans } from 'App/Helpers/Helpers'
 import LoginValidator from 'App/Validators/LoginValidator'
 import RegisterValidator from 'App/Validators/RegisterValidator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import UpdateProfileValidator from 'App/Validators/UpdateProfileValidator'
 
 export default class AuthController {
     /**
@@ -49,7 +50,7 @@ export default class AuthController {
                 })
         })
 
-        return await Helper.successResponse('Registered Successfully!', '')
+        return await Helper.successResponse(trans('messages.AUTH.register_success'), '')
     }
 
     /**
@@ -65,7 +66,7 @@ export default class AuthController {
         const payload = await request.validate(LoginValidator)
         const unauthorizedResponseData = {
             status: false,
-            message: 'Invalid credentials!',
+            message: trans('messages.AUTH.invalid_credentials'),
             result: '',
         }
 
@@ -75,7 +76,7 @@ export default class AuthController {
                     expiresIn: constants.TOKEN_EXPIRY,
                 })
 
-                return await Helper.successResponse('Logged In!', token)
+                return await Helper.successResponse(trans('messages.AUTH.login_success'), token)
             } catch {
                 return response.unauthorized(unauthorizedResponseData)
             }
@@ -91,7 +92,7 @@ export default class AuthController {
                 expiresIn: constants.TOKEN_EXPIRY,
             })
 
-            return await Helper.successResponse('Logged In!', token)
+            return await Helper.successResponse(trans('messages.AUTH.login_success'), token)
         }
     }
 
@@ -107,14 +108,14 @@ export default class AuthController {
     public async verify({ request, params, view }: HttpContextContract): Promise<any> {
         let responseData = {
             status: false,
-            message: 'Signature is missing or URL was tampered.',
+            message: trans('messages.AUTH.invalid_signature'),
             result: '',
         }
 
         if (request.hasValidSignature()) {
             await User.query().where({ email: params.email }).update({ email_verified: true })
             responseData.status = true
-            responseData.message = 'Email verification Success!'
+            responseData.message = trans('messages.AUTH.email_verification_success')
         }
 
         return await view.render('auth/verified', responseData)
@@ -129,7 +130,7 @@ export default class AuthController {
      */
     public async logout({ auth }: HttpContextContract): Promise<any> {
         await auth.use('api').revoke()
-        return await Helper.successResponse('Logged Out!', '')
+        return await Helper.successResponse(trans('messages.AUTH.logout_success'), '')
     }
 
     /**
@@ -140,6 +141,44 @@ export default class AuthController {
      * @returns Promise<any>
      */
     public async profile({ auth }: HttpContextContract): Promise<any> {
-        return await Helper.successResponse('Data fetched successfully!', auth.user)
+        return await Helper.successResponse(trans('messages.COMMON.data_fetch_success'), auth.user)
+    }
+
+    /**
+     * Update User Profile
+     *
+     * @author Hetarth Shah
+     * @param auth HttpContextContract
+     * @param request HttpContextContract
+     * @param response HttpContextContract
+     * @returns Promise<any>
+     */
+    public async updateProfile({ auth, request, response }: HttpContextContract): Promise<any> {
+        const payload = await request.validate(UpdateProfileValidator)
+        const unauthorizedResponseData = {
+            status: false,
+            message: trans('messages.AUTH.invalid_credentials'),
+            result: '',
+        }
+
+        if (auth.user && Object.keys(payload).length > 0) {
+            const user = await User.findOrFail(auth.user.id)
+
+            if (payload.username && payload.username !== '') {
+                user.username = payload.username
+            }
+
+            if (payload.password && payload.password !== '') {
+                user.password = payload.password
+            }
+
+            await user.save()
+        } else {
+            return response.unauthorized(unauthorizedResponseData)
+        }
+
+        await auth.user.refresh()
+
+        return await Helper.successResponse(trans('messages.AUTH.profile_update_success'), auth.user)
     }
 }

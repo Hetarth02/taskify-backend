@@ -46,6 +46,7 @@ Route.group(() => {
         // User APIs
         Route.get('logout', 'AuthController.logout').as('logout')
         Route.get('profile', 'AuthController.profile').as('profile')
+        Route.post('update-profile', 'AuthController.updateProfile').as('updateProfile')
 
         // Tasks APIs
         Route.get('tasks', 'TasksController.getTasks').as('getTasks')

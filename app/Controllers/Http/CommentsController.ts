@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Helpers from 'App/Helpers/Helpers'
+import Helpers, { trans } from 'App/Helpers/Helpers'
 import TaskComment from 'App/Models/TaskComment'
 import CreateTaskCommentValidator from 'App/Validators/CreateTaskCommentValidator'
 
@@ -21,7 +21,7 @@ export default class CommentsController {
             .orderBy('created_at', 'desc')
             .paginate(page ?? 1, perPage ?? 10)
 
-        return await Helpers.successResponse('Data fetched successfully!', task_comments.toJSON())
+        return await Helpers.successResponse(trans('messages.COMMON.data_fetch_success'), task_comments.toJSON())
     }
 
     /**
@@ -42,6 +42,6 @@ export default class CommentsController {
             parent_id: payload.parent_id,
         })
 
-        return await Helpers.successResponse('Comment created successfully!', [])
+        return await Helpers.successResponse(trans('messages.COMMENT.create_success'), [])
     }
 }

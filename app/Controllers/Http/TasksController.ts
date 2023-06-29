@@ -1,5 +1,5 @@
 import Task from 'App/Models/Task'
-import Helpers from 'App/Helpers/Helpers'
+import Helpers, { trans } from 'App/Helpers/Helpers'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateTaskValidator from 'App/Validators/CreateTaskValidator'
 
@@ -28,7 +28,7 @@ export default class TasksController {
             .orderBy('id', 'desc')
             .paginate(page ?? 1, perPage ?? 10)
 
-        return await Helpers.successResponse('Data fetched successfully!', tasks.toJSON())
+        return await Helpers.successResponse(trans('messages.COMMON.data_fetch_success'), tasks.toJSON())
     }
 
     /**
@@ -55,7 +55,7 @@ export default class TasksController {
             in_challenge: payload.in_challenge,
         })
 
-        return await Helpers.successResponse('Task created successfully!', [])
+        return await Helpers.successResponse(trans('messages.TASK.create_success'), [])
     }
 
     /**
@@ -74,6 +74,6 @@ export default class TasksController {
             .orderBy('id', 'desc')
             .paginate(page ?? 1, perPage ?? 10)
 
-        return await Helpers.successResponse('Data fetched successfully!', tasks.toJSON())
+        return await Helpers.successResponse(trans('messages.COMMON.data_fetch_success'), tasks.toJSON())
     }
 }
