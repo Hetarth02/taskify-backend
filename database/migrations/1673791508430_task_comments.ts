@@ -7,6 +7,7 @@ export default class extends BaseSchema {
         this.schema.createTable(this.tableName, (table) => {
             table.bigIncrements('id')
 
+            table.bigInteger('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
             table.bigInteger('task_id').unsigned().references('id').inTable('tasks').onDelete('CASCADE')
             table
                 .bigInteger('parent_id')

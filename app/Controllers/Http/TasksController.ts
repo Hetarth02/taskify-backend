@@ -2,11 +2,10 @@ import Task from 'App/Models/Task'
 import Helpers from 'App/Helpers/Helpers'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateTaskValidator from 'App/Validators/CreateTaskValidator'
-// import { TaskPriority } from 'Contracts/enums'
 
 export default class TasksController {
     /**
-     * Get User Data
+     * Get User Tasks
      *
      * @author Hetarth Shah
      * @param auth HttpContextContract
@@ -14,10 +13,19 @@ export default class TasksController {
      * @returns Promise<any>
      */
     public async getTasks({ auth, request }: HttpContextContract): Promise<any> {
-        const { page, perPage } = request.qs()
+        const { page, perPage, is_public, priority } = request.qs()
 
         const tasks = await Task.query()
+            // .preload('sub_tasks')
+            // .whereNull('parent_id')
             .where('user_id', auth.user!.id)
+            .if(is_public, (query) => {
+                query.where('is_public', is_public)
+            })
+            .if(priority, (query) => {
+                query.where('priority', priority)
+            })
+            .orderBy('id', 'desc')
             .paginate(page ?? 1, perPage ?? 10)
 
         return await Helpers.successResponse('Data fetched successfully!', tasks.toJSON())
@@ -35,18 +43,37 @@ export default class TasksController {
         const payload = await request.validate(CreateTaskValidator)
 
         await Task.create({
-            user_id: auth.user?.id,
-            parent_id: payload.parent_id,
-            title: payload.title,
-            description: payload.description,
             tags: payload.tags,
+            title: payload.title,
+            user_id: auth.user?.id,
+            end_at: payload.end_at,
+            priority: payload.priority,
             is_public: payload.is_public,
+            parent_id: payload.parent_id,
+            description: payload.description,
             is_complete: payload.is_complete,
             in_challenge: payload.in_challenge,
-            priority: payload.priority,
-            end_at: payload.end_at,
         })
 
         return await Helpers.successResponse('Task created successfully!', [])
+    }
+
+    /**
+     * Discover Public Tasks
+     *
+     * @author Hetarth Shah
+     * @param request HttpContextContract
+     * @returns Promise<any>
+     */
+    public async discover({ request }: HttpContextContract): Promise<any> {
+        const { page, perPage } = request.qs()
+
+        const tasks = await Task.query()
+            .whereNull('parent_id')
+            .where('is_public', true)
+            .orderBy('id', 'desc')
+            .paginate(page ?? 1, perPage ?? 10)
+
+        return await Helpers.successResponse('Data fetched successfully!', tasks.toJSON())
     }
 }

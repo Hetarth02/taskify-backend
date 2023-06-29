@@ -50,5 +50,13 @@ Route.group(() => {
         // Tasks APIs
         Route.get('tasks', 'TasksController.getTasks').as('getTasks')
         Route.post('task', 'TasksController.createTask').as('createTask')
+
+        // Comment APIs
+        Route.post('comment', 'CommentsController.createTaskComment').as('createTaskComment')
     }).middleware('auth:api')
+    // Comment APIs
+    Route.get('/:task_id/comments', 'CommentsController.getTaskComments').as('getTaskComments')
+
+    // Discover APIs
+    Route.get('discover', 'TasksController.discover').as('discover')
 }).prefix('/api')

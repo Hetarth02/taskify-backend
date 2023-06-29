@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon'
 import { TaskPriority } from 'Contracts/enums'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeFetch, column, HasMany, hasMany, ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
+
+type TaskQuery = ModelQueryBuilderContract<typeof Task>
 
 export default class Task extends BaseModel {
     @column({ isPrimary: true })
@@ -41,4 +43,15 @@ export default class Task extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     public updated_at: DateTime
+
+    @hasMany(() => Task, {
+        foreignKey: 'id',
+        localKey: 'parent_id',
+    })
+    public sub_tasks: HasMany<typeof Task>
+
+    @beforeFetch()
+    public static gettaskThread(query: TaskQuery) {
+        query.preload('sub_tasks').whereNotNull('parent_id')
+    }
 }
